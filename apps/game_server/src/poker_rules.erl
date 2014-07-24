@@ -68,9 +68,9 @@ combinations(L,1)->
 combinations([H|T],N)->
 	lists:foldl(fun(L,AccIn)->[[H|L]|AccIn] end,combinations(T,N),combinations(T,N-1)).
 
-group_by(List,KeyFunc) ->
+group_by(Cards) ->
 	Fun = fun(C,Acc)->
-			V=KeyFunc(C),
+			V=value(C),
 			case lists:keyfind(V,1,Acc) of
 				false->
 					[{V,[C],1}|Acc];
@@ -78,20 +78,7 @@ group_by(List,KeyFunc) ->
 					[{V,[C|L],N+1}|lists:keydelete(V,1,Acc)]
 			end
 	end,
-	lists:foldl(Fun,[],List).
-
-
-
-is_flush([H|_]=Cards) when length(Cards)==5 ->
-	lists:all(fun(C)->C#card.suit==H#card.suit end, Cards).
-
-is_straight(Cards) when length(Cards)==5 ->
-	Vs=[value(C)||C<-Cards],
-	[A,B,C,D,E]=lists:sort(fun(C1,C2)->C1 =< C2 end,Vs),
-	B-A==1 andalso C-B==1 andalso D-C==1 andalso E-D==1.
-
-sort_cards_desc(Cards)->
-	lists:sort(fun(C1,C2)->value(C1) >= value(C2) end,Cards).
+	lists:foldl(Fun,[],Cards).
 
 all_cards()->
 	[#card{suit=S,rank=R}||S<-?SUITS,R<-?RANKS].
@@ -114,7 +101,7 @@ sort_func({_V1,_Cs1,N1},{_V2,_Cs2,N2})->
 	N1 > N2.
 
 other_result(Cards)->
-	R=lists:sort(fun sort_func/2,group_by(Cards,fun(C)->value(C) end)),
+	R=lists:sort(fun sort_func/2,group_by(Cards)),
 	case R of
 		[{_,_,4},{_,_,1}]->
 			pattern(four_of_a_kind,Cards);
@@ -130,15 +117,26 @@ other_result(Cards)->
 			pattern(high_card,Cards)
 	end.
 
+is_flush([H|_]=Cards)->
+	lists:all(fun(C)->C#card.suit==H#card.suit end, Cards).
+
+is_straight(Cards)->
+	[A,B,C,D,E]=[value(C)||C<-Cards],
+	A-B==1 andalso B-C==1 andalso C-D==1 andalso D-E==1.
+
+sort_cards_desc(Cards)->
+	lists:sort(fun(C1,C2)->value(C1) >= value(C2) end,Cards).
+
 result(Cards) when length(Cards)==5 ->
-	case {is_flush(Cards),is_straight(Cards)} of
+	Scs=sort_cards_desc(Cards),
+	case {is_flush(Scs),is_straight(Scs)} of
 		{true,true}->
-			straight_flush(sort_cards_desc(Cards));
+			straight_flush(Scs);
 		{true,false}->
-			pattern(flush,Cards);
+			pattern(flush,Scs);
 		{false,true}->
-			pattern(straight,Cards);
+			pattern(straight,Scs);
 		{false,false}->
-			other_result(Cards)
+			other_result(Scs)
 	end.
 
