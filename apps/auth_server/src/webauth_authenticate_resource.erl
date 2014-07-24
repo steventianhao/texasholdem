@@ -19,7 +19,6 @@ to_json(ReqData,State)->
 	Result=jsx:encode([{<<"code">>,1},{<<"token">>,Token2}]),
 	{Result,ReqData,State}.
 
-
 exchange_token(ReqData)->
 	Token=wrq:path_info(token,ReqData),
 	Token2=uuid:to_string(uuid:uuid3(uuid:uuid4(), "simonvalorjacy")),
