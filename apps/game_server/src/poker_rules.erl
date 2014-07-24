@@ -61,8 +61,7 @@ combinations(_,0)->
 combinations(L,1)->
 	[[C]||C<-L];
 combinations([H|T],N)->
-	[[H|L]||L <-combinations(T,N-1)]++combinations(T,N).
-
+	lists:foldl(fun(L,AccIn)->[[H|L]|AccIn] end,combinations(T,N),combinations(T,N-1)).
 
 is_flush([H|_]=Cards) when length(Cards)==5 ->
 	lists:all(fun(C)->C#card.suit==H#card.suit end, Cards).
