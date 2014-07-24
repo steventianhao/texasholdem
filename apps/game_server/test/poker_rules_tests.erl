@@ -2,7 +2,7 @@
 -define(DEBUG,true).
 -include_lib("eunit/include/eunit.hrl").
 c(L)->
-	poker_rules:card(L).
+	poker_cards:card(L).
 
 c_test()->
 	Cs=c("HT"),
