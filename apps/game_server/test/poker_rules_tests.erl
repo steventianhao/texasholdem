@@ -10,6 +10,29 @@ c_test()->
 	Cs=c("HT"),
 	?assertEqual([{card,$H,$T}],Cs).
 
+result(royal_flush)->
+	{royal_flush,?ROYAL_FLUSH}.
+
+result(straight_flush,[Max])->
+	{straight_flush,?STRAIGHT_FLUSH+Max};
+result(four_of_a_kind,[C2,C1])->
+	{four_of_a_kind,?FOUR_OF_A_KIND+C2*10+C1};
+result(full_house,[C2,C1])->
+	{full_house,?FULL_HOUSE+C2*10+C1};
+result(flush,[C5,C4,C3,C2,C1])->
+	{flush,?FLUSH+C5*10000+C4*1000+C3*100+C2*10+C1};
+result(straight,[Max])->
+	{straight,?STRAIGHT+Max};
+result(three_of_a_kind,[C3,C2,C1])->
+	{three_of_a_kind,?THREE_OF_A_KIND+C3*100+C2*10+C1};
+result(two_pair,[C3,C2,C1])->
+	{two_pair,?TWO_PAIR+C3*100+C2*10+C1};
+result(one_pair,[C4,C3,C2,C1])->
+	{one_pair,?ONE_PAIR+C4*1000+C3*100+C2*10+C1};
+result(high_card,[C5,C4,C3,C2,C1])->
+	{high_card,?HIGH_CARD+C5*10000+C4*1000+C3*100+C2*10+C1}.
+
+
 c2_test()->
 	Cs=c("HTS5"),
 	?assertEqual([{card,$H,$T},{card,$S,$5}],Cs).
@@ -30,25 +53,25 @@ compare_test()->
 result2_test()->
 	Result=poker_rules:result(c("HTHJHQHKH9")),
 	?debugVal(Result),
-	?assertMatch({straight_flush,?STRAIGHT_FLUSH+13},Result).
+	?assertEqual(result(straight_flush,[13]),Result).
 
 result2a_test()->
 	Cs=c("H5H4H3H2HA"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({straight_flush,?STRAIGHT_FLUSH+5},Result).
+	?assertEqual({straight_flush,?STRAIGHT_FLUSH+5},Result).
 
 result3_test()->
 	Cs=c("HTSJHQHKH9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({straight,?STRAIGHT+13},Result).
+	?assertEqual({straight,?STRAIGHT+13},Result).
 
 result3a_test()->
 	Cs=c("H5S4H3H2HA"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({straight,?STRAIGHT+5},Result).
+	?assertEqual({straight,?STRAIGHT+5},Result).
 
 compare3_test()->
 	R1=poker_rules:result(c("HTSJHQHKH9")),
@@ -60,41 +83,41 @@ result4_test()->
 	Cs=c("HTH3HQHKH9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({flush,?FLUSH+13*10000+12*1000+10*100+9*10+3},Result).
+	?assertEqual({flush,?FLUSH+13*10000+12*1000+10*100+9*10+3},Result).
 
 
 result5_test()->
 	Cs=c("HTSTDTCTH9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({four_of_a_kind,?FOUR_OF_A_KIND+10*10+9},Result).
+	?assertEqual({four_of_a_kind,?FOUR_OF_A_KIND+10*10+9},Result).
 
 result6_test()->
 	Cs=c("HTSTDTC9H9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({full_house,?FULL_HOUSE+10*10+9},Result).
+	?assertEqual({full_house,?FULL_HOUSE+10*10+9},Result).
 
 result7_test()->
 	Cs=c("HTS3DTC9H9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({two_pair,?TWO_PAIR+10*100+9*10+3},Result).
+	?assertEqual({two_pair,?TWO_PAIR+10*100+9*10+3},Result).
 
 result8_test()->
 	Cs=c("HTS3D9C9H9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({three_of_a_kind,?THREE_OF_A_KIND+9*100+10*10+3},Result).
+	?assertEqual({three_of_a_kind,?THREE_OF_A_KIND+9*100+10*10+3},Result).
 
 result9_test()->
 	Cs=c("HTS3D7C9H9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({one_pair,?ONE_PAIR+9*1000+10*100+7*10+3},Result).
+	?assertEqual({one_pair,?ONE_PAIR+9*1000+10*100+7*10+3},Result).
 
 result10_test()->
 	Cs=c("HTS3D7C8H9"),
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
-	?assertMatch({high_card,?HIGH_CARD+10*10000+9*1000+8*100+7*10+3},Result).
+	?assertEqual({high_card,?HIGH_CARD+10*10000+9*1000+8*100+7*10+3},Result).
