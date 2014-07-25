@@ -16,21 +16,21 @@ result(royal_flush)->
 result(straight_flush,[Max])->
 	{straight_flush,?STRAIGHT_FLUSH+Max};
 result(four_of_a_kind,[C2,C1])->
-	{four_of_a_kind,?FOUR_OF_A_KIND+C2*10+C1};
+	{four_of_a_kind,?FOUR_OF_A_KIND+C2*20+C1};
 result(full_house,[C2,C1])->
-	{full_house,?FULL_HOUSE+C2*10+C1};
+	{full_house,?FULL_HOUSE+C2*20+C1};
 result(flush,[C5,C4,C3,C2,C1])->
-	{flush,?FLUSH+C5*10000+C4*1000+C3*100+C2*10+C1};
+	{flush,?FLUSH+C5*160000+C4*8000+C3*400+C2*20+C1};
 result(straight,[Max])->
 	{straight,?STRAIGHT+Max};
 result(three_of_a_kind,[C3,C2,C1])->
-	{three_of_a_kind,?THREE_OF_A_KIND+C3*100+C2*10+C1};
+	{three_of_a_kind,?THREE_OF_A_KIND+C3*400+C2*20+C1};
 result(two_pair,[C3,C2,C1])->
-	{two_pair,?TWO_PAIR+C3*100+C2*10+C1};
+	{two_pair,?TWO_PAIR+C3*400+C2*20+C1};
 result(one_pair,[C4,C3,C2,C1])->
-	{one_pair,?ONE_PAIR+C4*1000+C3*100+C2*10+C1};
+	{one_pair,?ONE_PAIR+C4*8000+C3*400+C2*20+C1};
 result(high_card,[C5,C4,C3,C2,C1])->
-	{high_card,?HIGH_CARD+C5*10000+C4*1000+C3*100+C2*10+C1}.
+	{high_card,?HIGH_CARD+C5*160000+C4*8000+C3*400+C2*20+C1}.
 
 
 c2_test()->
@@ -120,3 +120,12 @@ result10_test()->
 	Result=poker_rules:result(Cs),
 	?debugVal(Result),
 	?assertEqual(result(high_card,[10,9,8,7,3]),Result).
+
+resultxx_test()->
+	Acs=poker_cards:all_cards(),
+	Sacs=poker_cards_utils:shuffle(Acs),
+	A2=lists:sublist(Sacs,20),
+	A3=poker_cards_utils:combinations(A2,5),
+	Results=[{poker_cards:to_binary(Fc),poker_rules:result(Fc)}||Fc<-A3],
+	file:write_file("aaa.txt",io_lib:fwrite("~p.\n",[Results])),
+	?assert(true).

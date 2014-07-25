@@ -3,12 +3,12 @@
 -include("poker_cards.hrl").
 -import(poker_cards,[value/1]).
 
-sort_func({V1,_Cs1,N1},{V2,_Cs2,N2}) when N1==N2->
+sort({V1,_Cs1,N1},{V2,_Cs2,N2}) when N1==N2->
 	V1 >= V2;
-sort_func({_V1,_Cs1,N1},{_V2,_Cs2,N2})->
+sort({_V1,_Cs1,N1},{_V2,_Cs2,N2})->
 	N1 > N2.
 
-group_by(Cards) ->
+group_by_value(Cards) ->
 	lists:foldl(fun(C,Acc)->
 		V=value(C),
 		case lists:keyfind(V,1,Acc) of
@@ -20,7 +20,7 @@ group_by(Cards) ->
 	end,[],Cards).
 
 other_result(Cards)->
-	R=lists:sort(fun sort_func/2,group_by(Cards)),
+	R=lists:sort(fun sort/2,group_by_value(Cards)),
 	case R of
 		[{K2,_,4},{K1,_,1}]->
 			{four_of_a_kind,?FOUR_OF_A_KIND+weight([K2,K1])};
@@ -70,10 +70,8 @@ result(Cards) when length(Cards)==5 ->
 comp(A,B) when is_integer(A) andalso is_integer(B) andalso A==B-> 0;
 comp(A,B) when is_integer(A) andalso is_integer(B) andalso A >B-> 1;
 comp(A,B) when is_integer(A) andalso is_integer(B) -> -1.
-
-compare({_P1,V1},{_P2,V2})->
-	comp(V1,V2).
+compare({_P1,V1},{_P2,V2})-> comp(V1,V2).
 
 weight(List)->
-	{_,Total}=lists:foldr(fun(E,{N,V})->{N*10,E*N+V} end,{1,0},List),
+	{_,Total}=lists:foldr(fun(E,{N,V})->{N*20,E*N+V} end,{1,0},List),
 	Total.

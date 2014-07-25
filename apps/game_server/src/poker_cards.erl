@@ -1,5 +1,5 @@
 -module(poker_cards).
--export([card/1,value/1,all_cards/0]).
+-export([card/1,value/1,all_cards/0,to_binary/1]).
 -include("poker_cards.hrl").
 
 value(#card{rank=?ACE})->
@@ -33,6 +33,9 @@ card([S,R])->
 	[#card{rank=R,suit=S}];
 card([S,R|T])->
 	[#card{rank=R,suit=S}|card(T)].
+
+to_binary(Cards)->
+	list_to_binary(lists:flatmap(fun(C)->[C#card.suit,C#card.rank] end,Cards)).
 
 all_cards()->
 	[#card{suit=S,rank=R}||S<-?SUITS,R<-?RANKS].
